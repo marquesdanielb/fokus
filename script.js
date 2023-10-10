@@ -1,14 +1,30 @@
+//Context
 const html = document.querySelector('html');
+const banner = document.querySelector('.app__image');
+const title = document.querySelector('.app__title');
+
+//Card buttons
 const focusBt = document.querySelector('.app__card-button--focus');
 const shortBt = document.querySelector('.app__card-button--short');
 const longBt = document.querySelector('.app__card-button--long');
 const cardBt = document.querySelectorAll('.app__card-button');
-const banner = document.querySelector('.app__image');
-const title = document.querySelector('.app__title');
+
+//Start and Pause buttons
+const startPauseBt = document.querySelector('#start-pause');
+const startPauseSpan = document.querySelector('#start-pause span');
+const startPauseImg = document.querySelector('.app__card-primary-butto-icon');
+
+//Audio 
 const musicFocusInput = document.querySelector('#alternate-music');
 const music = new Audio('./sounds/luna-rise-part-one.mp3');
-music.loop = true;
+const soundPlay = new Audio('./sounds/play.wav');
+const soundPause = new Audio('./sounds/pause.mp3');
+const soundBeep = new Audio('./sounds/beep.mp3');
 
+let elapsedTimeSeconds = 5;
+let intervalId = null;
+
+music.loop = true;
 musicFocusInput.addEventListener('change', () => {
     if (music.paused) {
         music.play();
@@ -64,4 +80,35 @@ function changeContext(context) {
         default:
             break;
     }
+}
+
+const countdown = () => {
+    if (elapsedTimeSeconds <= 0) {
+        soundBeep.play();
+        alert('Tempo finalizado!');
+        reset();
+        return;
+    }
+    elapsedTimeSeconds -= 1;
+};
+
+startPauseBt.addEventListener('click', startOrPause);
+
+function startOrPause() {
+    if (intervalId) {
+        startPauseImg.setAttribute('src', './img/play_arrow.png');
+        soundPause.play();
+        reset();
+        return;
+    }
+    startPauseImg.setAttribute('src', './img/pause.png');
+    soundPlay.play();
+    intervalId = setInterval(countdown, 1000);
+    startPauseSpan.textContent = "Pause";
+}
+
+function reset() {
+    clearInterval(intervalId);
+    startPauseSpan.textContent = "Start";
+    intervalId = null;
 }
