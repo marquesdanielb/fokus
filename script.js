@@ -8,6 +8,7 @@ const focusBt = document.querySelector('.app__card-button--focus');
 const shortBt = document.querySelector('.app__card-button--short');
 const longBt = document.querySelector('.app__card-button--long');
 const cardBt = document.querySelectorAll('.app__card-button');
+const timer = document.querySelector('#timer');
 
 //Start and Pause buttons
 const startPauseBt = document.querySelector('#start-pause');
@@ -21,7 +22,7 @@ const soundPlay = new Audio('./sounds/play.wav');
 const soundPause = new Audio('./sounds/pause.mp3');
 const soundBeep = new Audio('./sounds/beep.mp3');
 
-let elapsedTimeSeconds = 5;
+let elapsedTimeSeconds = 1500;
 let intervalId = null;
 
 music.loop = true;
@@ -34,21 +35,25 @@ musicFocusInput.addEventListener('change', () => {
 });
 
 focusBt.addEventListener('click', () => {
+    elapsedTimeSeconds = 1500;
     changeContext('focus');
     focusBt.classList.add('active');
 });
 
 shortBt.addEventListener('click', () => {
+    elapsedTimeSeconds = 300;
     changeContext('short-break');
     shortBt.classList.add('active');
 });
 
 longBt.addEventListener('click', () => {
+    elapsedTimeSeconds = 900;
     changeContext('long-break');
     longBt.classList.add('active');
 });
 
 function changeContext(context) {
+    showTimer();
     cardBt.forEach(function (context) {
         context.classList.remove('active');
     })
@@ -90,6 +95,7 @@ const countdown = () => {
         return;
     }
     elapsedTimeSeconds -= 1;
+    showTimer();
 };
 
 startPauseBt.addEventListener('click', startOrPause);
@@ -112,3 +118,11 @@ function reset() {
     startPauseSpan.textContent = "Start";
     intervalId = null;
 }
+
+function showTimer() {
+    const time = new Date(elapsedTimeSeconds * 1000);
+    const formattedTime = time.toLocaleTimeString('pt-Br', {minute: '2-digit', second: '2-digit'});
+    timer.innerHTML = `${formattedTime}`;
+}
+
+showTimer();
